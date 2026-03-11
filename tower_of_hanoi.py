@@ -476,18 +476,54 @@ def make_icon(icon_id, size_px=32, color="#00ffcc", bg="#080810", scale=None):
         rect(1,7,3,10); rect(12,7,14,10)
         rect(4,11,6,14); rect(9,11,11,14)
 
-    elif icon_id == "multi":    # two people
-        rect(1,2,5,5); rect(0,6,6,9)
-        rect(1,10,3,13); rect(4,10,6,13)
-        rect(8,1,13,5); p(9,2,bg_);p(10,2,bg_);p(11,2,bg_)
-        rect(7,6,14,10)
-        rect(7,11,9,14); rect(11,11,14,14)
+    elif icon_id == "multi":    # two people (simpler, fixed layout)
+        # left head and right head
+        rect(2,2,5,5)
+        rect(10,2,13,5)
+        # shoulders/arms connecting
+        rect(4,6,11,7)
+        # torsos
+        rect(3,7,4,12)
+        rect(11,7,12,12)
+        # legs
+        rect(3,13,4,15)
+        rect(11,13,12,15)
+        if detailed:
+            # outline the heads and bodies
+            for hx in range(1,7):
+                p(hx,1,"#000000")
+                p(hx,6,"#000000")
+            for hx in range(9,15):
+                p(hx,1,"#000000")
+                p(hx,6,"#000000")
+            # shadow under arms
+            rect(4,8,11,9,"#444444")
 
-    elif icon_id == "scores":   # podium
-        rect(1,6,5,13); rect(6,2,10,13); rect(11,9,14,13)
-        rect(0,13,15,15)
-        rect(7,0,9,1,Y); p(8,0,Y)
-        p(2,4,W);p(3,4,W); p(12,7,W);p(12,8,W)
+    elif icon_id == "scores":   # podium with star
+        # three steps: left, center, right
+        rect(2,6,5,13)      # left small step
+        rect(7,2,10,13)     # center tall step
+        rect(12,8,15,13)    # right medium step
+        rect(0,13,15,15)    # base platform
+        # star/medal above centre
+        p(8,1,Y); p(7,2,Y); p(9,2,Y); p(8,3,Y)
+        if detailed:
+            # add borders around steps
+            for x in range(2,6):
+                p(x,6,"#000000"); p(x,13,"#000000")
+            for y in range(6,14):
+                p(2,y,"#000000"); p(5,y,"#000000")
+            for x in range(7,11):
+                p(x,2,"#000000"); p(x,13,"#000000")
+            for y in range(2,14):
+                p(7,y,"#000000"); p(10,y,"#000000")
+            for x in range(12,16):
+                p(x,8,"#000000"); p(x,13,"#000000")
+            for y in range(8,14):
+                p(12,y,"#000000"); p(15,y,"#000000")
+            # highlight stripes
+            for y in range(4,14,2):
+                p(8,y,W)
 
     elif icon_id == "double":   # two bolts
         rect(1,2,5,3)
@@ -626,16 +662,27 @@ def draw_icon(canvas, icon_id, cx, cy, size=20, color="#00ffcc"):
              cx+size//2,cy+size//3]
         canvas.create_polygon(pts,fill=color,outline="")
     elif icon_id == "scores":
+        # three podium steps
         rct(cx-size//2,cy+size//4,cx-size//4,cy+size//2)
         rct(cx-size//8,cy-size//4,cx+size//8,cy+size//2)
         rct(cx+size//4,cy,cx+size//2,cy+size//2)
+        # small star above center
+        pts = [cx,cy-size//3, cx-1,cy-size//3+2, cx+1,cy-size//3+2]
+        canvas.create_polygon(pts, fill=color, outline="")
     elif icon_id == "menu":
         for dy in (-g,0,g): rct(cx-size//2,cy+dy-g//2,cx+size//2,cy+dy+g//2)
     elif icon_id == "multi":
+        # two simplified figures
+        # left head
         canvas.create_oval(cx-size//3,cy-size//2,cx-g,cy-size//4,fill=color,outline="")
-        rct(cx-size//3,cy-size//4,cx,cy+size//2)
+        # right head
         canvas.create_oval(cx+g,cy-size//2,cx+size//3,cy-size//4,fill=color,outline="")
-        rct(cx,cy-size//4,cx+size//3,cy+size//2)
+        # connecting shoulders
+        rct(cx-size//3,cy-size//4,cx+size//3,cy-size//6)
+        # left body
+        rct(cx-size//4,cy-size//6,cx-size//4+1,cy+size//2)
+        # right body
+        rct(cx+size//4-1,cy-size//6,cx+size//4,cy+size//2)
     elif icon_id == "solo":
         canvas.create_oval(cx-size//4,cy-size//2,cx+size//4,cy-size//6,fill=color,outline="")
         rct(cx-size//3,cy-size//6,cx+size//3,cy+size//2)
